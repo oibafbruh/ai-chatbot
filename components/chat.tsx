@@ -131,7 +131,7 @@ useAutoResume({
 
         <Messages
           chatId={id}
-          status={status === 'idle' ? 'default' : status}
+          status={status === 'idle' ? 'idle' as ChatStatus : status}
           votes={votes}
           messages={messages}
           setMessages={setMessages}
