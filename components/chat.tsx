@@ -48,8 +48,6 @@ export function Chat({
 
   const [input, setInput] = useState<string>('');
 
-  // --- after deleting useChat, add this block ---
-
 // Local state for our chat messages and streaming status
 const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
 const [status, setStatus] = useState<'idle' | 'streaming' | 'error'>('idle');
