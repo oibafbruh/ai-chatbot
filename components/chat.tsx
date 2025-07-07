@@ -135,7 +135,7 @@ useAutoResume({
           votes={votes}
           messages={messages}
           setMessages={setMessages}
-          regenerate={() => {}}
+          regenerate={async () => {}}
           isReadonly={isReadonly}
           isArtifactVisible={isArtifactVisible}
         />
@@ -170,7 +170,7 @@ useAutoResume({
         setAttachments={setAttachments}
         sendMessage={sendMessage}
         messages={messages}
-        regenerate={() => {}}
+        regenerate={async () => {}}
         setMessages={setMessages}
         votes={votes}
         isReadonly={isReadonly}
