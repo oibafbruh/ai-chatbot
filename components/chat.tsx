@@ -1,7 +1,5 @@
 'use client';
 
-import { DefaultChatTransport } from 'ai';
-import { useChat } from '@ai-sdk/react';
 import { useEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { ChatHeader } from '@/components/chat-header';
@@ -50,50 +48,51 @@ export function Chat({
 
   const [input, setInput] = useState<string>('');
 
-  const {
-    messages,
-    setMessages,
-    sendMessage,
-    status,
-    stop,
-    regenerate,
-    resumeStream,
-  } = useChat<ChatMessage>({
-    id,
-    messages: initialMessages,
-    experimental_throttle: 100,
-    generateId: generateUUID,
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-      fetch: fetchWithErrorHandlers,
-      prepareSendMessagesRequest({ messages, id, body }) {
-        return {
-          body: {
-            id,
-            message: messages.at(-1),
-            selectedChatModel: initialChatModel,
-            selectedVisibilityType: visibilityType,
-            ...body,
-          },
-        };
-      },
-    }),
-    onData: (dataPart) => {
-      setDataStream((ds) => (ds ? [...ds, dataPart] : []));
-    },
-    onFinish: () => {
-      mutate(unstable_serialize(getChatHistoryPaginationKey));
-    },
-    onError: (error) => {
-      if (error instanceof ChatSDKError) {
-        toast({
-          type: 'error',
-          description: error.message,
-        });
-      }
-    },
-  });
+  // --- after deleting useChat, add this block ---
 
+// Local state for our chat messages and streaming status
+const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+const [status, setStatus] = useState<'idle' | 'streaming' | 'error'>('idle');
+
+// Custom sendMessage that POSTs to /api/chat and streams the assistant reply
+async function sendMessage(content: string) {
+  const userMsg: ChatMessage = { role: 'user', parts: [{ type: 'text', text: content }], id: generateUUID() };
+  setMessages((m) => [...m, userMsg]);
+  setStatus('streaming');
+
+  const res = await fetchWithErrorHandlers('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, message: userMsg }),
+  });
+  if (!res.ok) return setStatus('error');
+
+  const reader = res.body!.getReader();
+  let assistantText = '';
+  // start an empty assistant message
+  setMessages((m) => [...m, { role: 'assistant', parts: [], id: generateUUID() }]);
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    assistantText += new TextDecoder().decode(value);
+    setMessages((all) => {
+      const copy = [...all];
+      // append to the last message’s parts
+      copy[copy.length - 1].parts = [{ type: 'text', text: assistantText }];
+      return copy;
+    });
+  }
+  setStatus('idle');
+}
+
+// Wire up the form’s onSubmit
+function onSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  if (!input.trim()) return;
+  sendMessage(input.trim());
+  setInput('');
+}
   const searchParams = useSearchParams();
   const query = searchParams.get('query');
 
@@ -162,6 +161,7 @@ export function Chat({
               setMessages={setMessages}
               sendMessage={sendMessage}
               selectedVisibilityType={visibilityType}
+              onSubmit={onSubmit}
             />
           )}
         </form>
