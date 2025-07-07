@@ -96,16 +96,11 @@ function onSubmit(e: React.FormEvent) {
 
   const [hasAppendedQuery, setHasAppendedQuery] = useState(false);
 
-  useEffect(() => {
-    if (query && !hasAppendedQuery) {
-    sendMessage({
-       role: 'user',
-      content: query,
-    });
-      setHasAppendedQuery(true);
-      window.history.replaceState({}, '', `/chat/${id}`);
-    }
-  }, [query, sendMessage, hasAppendedQuery, id]);
+useEffect(() => {
+  if (query && !hasAppendedQuery) {
+    sendMessage(query); // just the string
+  }
+}, [query, hasAppendedQuery, sendMessage]);
 
   const { data: votes } = useSWR<Array<Vote>>(
     messages.length >= 2 ? `/api/vote?chatId=${id}` : null,
