@@ -1,5 +1,6 @@
 'use client';
 
+import { resumeStream } from 'ai';
 import { useEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { ChatHeader } from '@/components/chat-header';
@@ -96,11 +97,11 @@ function onSubmit(e: React.FormEvent) {
 
   const [hasAppendedQuery, setHasAppendedQuery] = useState(false);
 
-useEffect(() => {
-  if (query && !hasAppendedQuery) {
-    sendMessage(query); // just the string
-  }
-}, [query, hasAppendedQuery, sendMessage]);
+  useEffect(() => {
+    if (query && !hasAppendedQuery) {
+      sendMessage(query);
+    }
+  }, [query, hasAppendedQuery, sendMessage]);
 
   const { data: votes } = useSWR<Array<Vote>>(
     messages.length >= 2 ? `/api/vote?chatId=${id}` : null,
