@@ -135,7 +135,6 @@ useAutoResume({
           votes={votes}
           messages={messages}
           setMessages={setMessages}
-          regenerate={regenerate}
           isReadonly={isReadonly}
           isArtifactVisible={isArtifactVisible}
         />
@@ -171,7 +170,6 @@ useAutoResume({
         sendMessage={sendMessage}
         messages={messages}
         setMessages={setMessages}
-        regenerate={regenerate}
         votes={votes}
         isReadonly={isReadonly}
         selectedVisibilityType={visibilityType}
