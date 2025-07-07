@@ -1,5 +1,6 @@
 'use client';
 
+import type { ChatStatus } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { ChatHeader } from '@/components/chat-header';
@@ -50,7 +51,7 @@ export function Chat({
 
 // Local state for our chat messages and streaming status
 const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
-const [status, setStatus] = useState<'idle' | 'streaming' | 'error'>('idle');
+const [status, setStatus] = useState<ChatStatus>('idle');
 
 // Custom sendMessage that POSTs to /api/chat and streams the assistant reply
 async function sendMessage(content: string) {
