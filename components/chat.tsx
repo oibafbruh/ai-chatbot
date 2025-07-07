@@ -110,12 +110,12 @@ function onSubmit(e: React.FormEvent) {
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const isArtifactVisible = useArtifactSelector((state) => state.isVisible);
 
-  useAutoResume({
-    autoResume,
-    initialMessages,
-    resumeStream: () => {}, //fake fallback function
-    setMessages,
-  });
+useAutoResume({
+  autoResume,
+  initialMessages,
+  resumeStream: async () => {}, // ✅ async dummy fallback
+  setMessages,
+});
 
   return (
     <>
