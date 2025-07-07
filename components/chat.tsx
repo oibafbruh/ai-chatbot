@@ -98,11 +98,10 @@ function onSubmit(e: React.FormEvent) {
 
   useEffect(() => {
     if (query && !hasAppendedQuery) {
-      sendMessage({
-        role: 'user' as const,
-        parts: [{ type: 'text', text: query }],
-      });
-
+    sendMessage({
+       role: 'user',
+      content: query,
+    });
       setHasAppendedQuery(true);
       window.history.replaceState({}, '', `/chat/${id}`);
     }
