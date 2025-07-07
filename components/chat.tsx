@@ -113,6 +113,7 @@ function onSubmit(e: React.FormEvent) {
   useAutoResume({
     autoResume,
     initialMessages,
+    resumeStream: () => {}, //fake fallback function
     setMessages,
   });
 
