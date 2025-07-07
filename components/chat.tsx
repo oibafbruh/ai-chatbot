@@ -1,6 +1,5 @@
 'use client';
 
-import { resumeStream } from 'ai';
 import { useEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { ChatHeader } from '@/components/chat-header';
@@ -114,7 +113,6 @@ function onSubmit(e: React.FormEvent) {
   useAutoResume({
     autoResume,
     initialMessages,
-    resumeStream,
     setMessages,
   });
 
