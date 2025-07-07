@@ -55,3 +55,6 @@ export interface Attachment {
   url: string;
   contentType: string;
 }
+
+export type ChatStatus = 'idle' | 'streaming' | 'error';
+
